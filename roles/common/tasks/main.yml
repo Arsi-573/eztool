@@ -1,0 +1,6 @@
+- name: Asenna paketit
+  apt: 
+    name: [curl, micro, libreoffice, caddy, ufw, acl, tree]
+    state: present
+    update_cache: yes
+    

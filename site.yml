@@ -1,0 +1,21 @@
+- name: Automaattinen IT
+  hosts: all
+  become: yes
+  vars:
+    company_name: "Esimerkki Oy"
+    domain_name: "{{ company_name | lower | replace(' ', '') }}.com"
+    first_name: "Matti"
+    last_name: "Meikäläinen"
+    #Käyttäjätunnus 6 merkkiä --> 4 ensimmäistä etunimestä + 2 sukunimestä
+    username: "{{ (first_name[:4] + last_name[:2]) | lower }}"
+
+  roles: 
+    - common
+    - web
+    - users
+
+  handlers:
+    - name: Restart Caddy
+      service: 
+        name: caddy
+        state: restarted

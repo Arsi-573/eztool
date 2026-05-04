@@ -4,3 +4,11 @@
     state: present
     update_cache: yes
     
+- name: Luo aliakset terminaali komennoille
+  copy:
+    dest: /etc/profile.d/termaliakset.sh
+    content: |
+      alias update='sudo apt update && sudo apt upgrade -y'
+    owner: root
+    group: root
+    mode: "0644"

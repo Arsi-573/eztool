@@ -1,30 +1,40 @@
-- name: Luo uusi käyttäjä ja generoi SSH
+- name: Luo uudet käyttäjät ja generoi SSH
   user:
-    name: "{{ username }}"
+    name: "{{ (item.first_name[:4] + item.last_name[:2]) | lower }}"
     shell: /bin/bash
     generate_ssh_key: yes
     ssh_key_bits: 2048
+    password: "{{ (company_name | replace(' ', '') + '123!') | password_hash('sha512') }}"
+  loop: "{{ tyontekijat }}"
 
 - name: Käyttäjäraportti rootille
-  file: 
+  file:
     path: /root/user_reports
     state: directory
     owner: root
     group: root
     mode: '0700'
 
-- name: Luo raportti 
+- name: Generoidun SSH-avaimen löytäminen kohdekoneelta
+  slurp:
+    src: "/home/{{ (item.first_name[:4] + item.last_name[:2]) | lower }}/.ssh/id_rsa.pub"
+  loop: "{{ tyontekijat }}"
+  register: avaimet
+  failed_when: false
+
+- name: Luo raportti
   copy:
     content: |
       TYÖNTEKIJÄRAPORTTI
       -----------------------
-      Koko nimi: {{ first_name }} {{ last_name }}
-      Käyttäjätunnus: {{ username }}
-      Sähköposti: {{ username }}@{{ domain_name }}
-      Julkinen SSH-avain: {{ lookup('file', '/home/' + username + '/.ssh/id_rsa.pub') }}
+      Koko nimi: {{ item.item.first_name }} {{ item.item.last_name }}
+      Käyttäjätunnus: {{ (item.item.first_name[:4] + item.item.last_name[:2]) | lower }}
+      Sähköposti: {{ (item.item.first_name[:4] + item.item.last_name[:2]) | lower }}@{{ domain_name }}
+      Julkinen SSH-avain: {{ item['content'] | b64decode | trim }}
       -----------------------
-    dest: "/root/user_reports/info_{{ username }}.txt"
+    dest: "/root/user_reports/info_{{ (item.item.first_name[:4] + item.item.last_name[:2]) | lower }}.txt"
     owner: root
     group: root
     mode: '0600'
-        
+  loop: "{{ avaimet.results }}"
+  when: item.content is defined

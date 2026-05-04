@@ -1,2 +1,92 @@
-# eztool
-Repository of our mini project on easy-to-use Ansible based IaC- tool for small businesses to manage their ITC.
+![ezTool](https://i.imgur.com/3Lh57ow.png)
+<p align="center"><small><i>Photo by <a href="https://unsplash.com/@hypernature?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Maximilian Bungart</a> on <a href="https://unsplash.com/photos/colorful-light-patterns-on-a-dark-tiled-floor-PkLxHkdR8Bo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+      </i></small></p>
+
+# ezTool
+
+**ezTool** is a lightweight **Infrastructure as Code** miniproject built with Ansible, designed to help small businesses manage their ITC environments effortlessly. Developed as part of the Server Management course taught by Tero Karvinen.
+
+---
+
+> [!WARNING]
+> **This project was built purely as a learning exercise and is not suitable for production use.** Because this playbook automatically makes weak and easy-to-guess default passwords for user accounts, there is a risk of unauthorized access if deployed on an exposed system. 
+> 
+> **By using this playbook, you aknowledge that the authors of this software are not responsible for any damage, data loss, or security problems that may happen as a result of using it.** Only use in local or isolated test environments.
+
+---
+
+## Overview
+
+Setting up workstations by hand can be very time-consuming and it is really easy to make mistakes. ezTool solves this problem by using Ansible's idempotent automation to create a provisioning process that is always the same and can be repeated. The playbook installs the necessary software, sets up user accounts with SSH key pairs, sets up a local intranet, and applies system-wide shell aliases, all without needing to be done by hand on the target machine.
+
+## Features
+
+- **Software setup** — Installs essential tools including KeePassXC, Caddy, LibreOffice, and other system utilities
+- **Intranet** — Deploys a Caddy-served company portal accessible via a local domain
+- **Shell aliases** — Registers a global `update` alias across all user accounts via `/etc/profile.d/` _(Which can be customised!)_
+- **User reports** — Generates per-user text reports containing account details and public SSH keys
+
+## Requirements
+
+| Requirement | Details |
+|---|---|
+| Control node | Ansible installed (e.g. Debian) |
+| Target node | Debian/Ubuntu VM in VirtualBox |
+| Network | **Two adapters:** Adapter 1 as **NAT** and Adapter 2 as **Host-only Adapter** configured on both VMs |
+| Access | SSH key-based authentication to target |
+
+## Usage
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/yourusername/eztools.git
+cd eztools
+```
+
+**2. Configure the inventory**
+
+Edit `hosts.ini` with your target machine's IP and user:
+```ini
+[all]
+192.168.56.xxx ansible_user=youruser ansible_become=true
+```
+
+**3. Set company variables**
+
+Edit the `vars` section in `site.yml`:
+```yaml
+vars:
+  company_name: "Esimerkki Oy"
+  tyontekijat:
+    - first_name: "Matti"
+      last_name: "Meikäläinen"
+    - first_name: "Maija"
+      last_name: "Meikäläinen"
+```
+
+**4. Run the playbook**
+```bash
+ansible-playbook -i hosts.ini site.yml
+```
+
+To preview changes without applying them:
+```bash
+ansible-playbook -i hosts.ini site.yml --check
+# Caddy might throw an error during check mode if it is not installed yet. This is normal.
+```
+
+## Roles
+
+### `common`
+Handles system-level configuration shared across all users. Installs packages and registers global shell aliases through `/etc/profile.d/`.
+
+### `users`
+Creates employee accounts based on the `tyontekijat` variable list. Usernames are created automatically from the first four characters of the first name and the first two of the last name. Each account receives an SSH key pair and a generated report under `/root/user_reports/`.
+
+### `web`
+Deploys a Caddy web server and renders a company intranet page from a Jinja2 template. The local domain is registered in `/etc/hosts`.
+
+## Notes
+
+- **Passwords:** For this demo, user passwords are automatically generated from the company name. In a real work environment you should not do this, instead, passwords should be securely encrypted and hidden using a tool like [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html).
+- **Inventory Security:** To prevent accidentally committing sensitive information to GitHub (like real IPs, usernames, or passwords), you should add your `hosts.ini` file to `.gitignore`. However, for this specific project, committing it was safe since we were only using local VirtualBox environments and private IP addresses.

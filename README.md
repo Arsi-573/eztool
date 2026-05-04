@@ -1,6 +1,5 @@
 ![ezTool](https://i.imgur.com/3Lh57ow.png)
-<p align="center"><small><i>Photo by <a href="https://unsplash.com/@hypernature?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Maximilian Bungart</a> on <a href="https://unsplash.com/photos/colorful-light-patterns-on-a-dark-tiled-floor-PkLxHkdR8Bo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-      </i></small></p>
+<p align="center"><small><i>Photo by <a href="https://unsplash.com/@hypernature?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Maximilian Bungart</a> on <a href="https://unsplash.com/photos/colorful-light-patterns-on-a-dark-tiled-floor-PkLxHkdR8Bo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></i></small></p>
 
 # ezTool
 

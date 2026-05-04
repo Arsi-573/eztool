@@ -22,6 +22,10 @@
 - name: Lisää domain hosts-tiedostoon
   lineinfile:
     path: /etc/hosts
+<<<<<<< HEAD
     line: "127.0.0.1 ’{{ domain_name }}"
+=======
+    line: "127.0.0.1 {{ domain_name }}"
+>>>>>>> 0616bd3ae4f6f9ef0446c6a578c5d9a2f8fcecd1
     state: present
     

@@ -45,8 +45,8 @@ sudo apt update && sudo apt install -y git
 
 **2. Clone the repository**
 ```bash
-git clone https://github.com/Arsi-573/eztools.git
-cd eztools
+git clone https://github.com/Arsi-573/eztool.git
+cd eztool
 ```
 
 **3. Configure the inventory & variables**

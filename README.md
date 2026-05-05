@@ -37,7 +37,8 @@ Setting up workstations by hand can be very time-consuming and it is really easy
 ## Usage
 
 **1. Install Git**
-Before downloading the project, ensure that Git is installed on yyour target machine:
+
+Before downloading the project, ensure that Git is installed on your target machine:
 ```bash
 sudo apt update && sudo apt install -y git
 ```

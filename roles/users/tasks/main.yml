@@ -7,6 +7,15 @@
     password: "{{ (company_name | replace(' ', '') + '123!') | password_hash('sha512') }}"
   loop: "{{ tyontekijat }}"
 
+- name: Salli apt update ja upgrade ilman salasanaa
+  copy:
+    content: |
+      {{ (item.first_name[:4] + item.last_name[:2]) | lower }} ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y
+    dest: "/etc/sudoers.d/{{ (item.first_name[:4] + item.last_name[:2]) | lower }}"
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  loop: "{{ tyontekijat }}"
+
 - name: Käyttäjäraportti rootille
   file:
     path: /root/user_reports

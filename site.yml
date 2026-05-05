@@ -1,5 +1,5 @@
 - name: Automaattinen IT
-  hosts: all
+  hosts: "{{ to | default('local') }}"
   become: yes
   vars:
     company_name: "Esimerkki Oy"

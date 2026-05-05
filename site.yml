@@ -10,6 +10,10 @@
         last_name: "Meikäläinen"
       - first_name: "Maija"
         last_name: "Meikäläinen"
+      - first_name: "Erkki"
+        last_name: "Esimerkki"
+      - first_name: "Eija"
+        last_name: "Esimerkki"
 
   roles: 
     - common

@@ -12,3 +12,14 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Salli SSH-yhteydet palomuurissa
+  community.general.ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Kytke palomuuri päälle
+  community.general.ufw:
+    state: enabled
+    policy: deny

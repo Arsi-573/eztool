@@ -3,14 +3,14 @@
 
 # ezTool
 
-**ezTool** is a lightweight **Infrastructure as Code** miniproject built with Ansible, designed to help small businesses manage their ITC environments effortlessly. Developed as part of the Server Management course taught by Tero Karvinen.
+**ezTool** is a lightweight **Infrastructure as Code** miniproject built with Ansible, designed to help small businesses manage their ICT environments effortlessly. Developed as part of the Server Management course taught by Tero Karvinen.
 
 ---
 
 > [!WARNING]
 > **This project was built purely as a learning exercise and is not suitable for production use.** Because this playbook automatically makes weak and easy-to-guess default passwords for user accounts, there is a risk of unauthorized access if deployed on an exposed system. 
 > 
-> **By using this playbook, you aknowledge that the authors of this software are not responsible for any damage, data loss, or security problems that may happen as a result of using it.** Only use in local or isolated test environments.
+> **By using this playbook, you acknowledge that the authors of this software are not responsible for any damage, data loss, or security problems that may happen as a result of using it.** Only use in local or isolated test environments.
 
 ---
 
@@ -31,28 +31,38 @@ Setting up workstations by hand can be very time-consuming and it is really easy
 |---|---|
 | Control node | Ansible installed (e.g. Debian) |
 | Target node | Debian/Ubuntu VM in VirtualBox |
-| Network | **Two adapters:** Adapter 1 as **NAT** and Adapter 2 as **Host-only Adapter** configured on both VMs |
+| Network | **Remote VM deployment only:** Two adapters configured on both VMs (Adapter 1 as **NAT**, and Adapter 2 as **Host-only Adapter**) |
 | Access | SSH key-based authentication to target |
 
 ## Usage
 
-**1. Clone the repository**
+**1. Install Git**
+Before downloading the project, ensure that Git is installed on yyour target machine:
+```bash
+sudo apt update && sudo apt install -y git
+```
+
+**2. Clone the repository**
 ```bash
 git clone https://github.com/yourusername/eztools.git
 cd eztools
 ```
 
-**2. Configure the inventory**
+**3. Configure the inventory & variables**
 
-Edit `hosts.ini` with your target machine's IP and user:
+The playbook supports running either locally or on a remote VM. Edit `hosts.ini` to set your target environment:
 ```ini
-[all]
-192.168.56.xxx ansible_user=youruser ansible_become=true
+[workstation]
+# Uncomment and add your target IP and user here for remote deployment
+# 192.168.56.xxx ansible_user=USER_HERE ansible_become=true
+
+[local]
+localhost ansible_connection=local ansible_become=true
 ```
 
-**3. Set company variables**
+**4. Set company variables**
 
-Edit the `vars` section in `site.yml`:
+Edit the `vars` section in `site.yml` to define your company and employees:
 ```yaml
 vars:
   company_name: "Esimerkki Oy"
@@ -63,12 +73,19 @@ vars:
       last_name: "Meikäläinen"
 ```
 
-**4. Run the playbook**
+**5. Run the setup**
+
+By default, the playbook is set to run on your **local machine**, so to run the setup script locally:
 ```bash
-ansible-playbook -i hosts.ini site.yml
+chmod +x install.sh && ./install.sh
 ```
 
-To preview changes without applying them:
+_(Alternatively, to run the playbook on a remote workstation, we must specify the target using the `-e "to=workstation" variable`):_
+```bash
+ansible-playbook -i hosts.ini site.yml -e "to=workstation" -k -K
+```
+
+To preview changes without applying them locally:
 ```bash
 ansible-playbook -i hosts.ini site.yml --check
 # Caddy might throw an error during check mode if it is not installed yet. This is normal.

@@ -20,8 +20,8 @@ Setting up workstations by hand can be very time-consuming and it is really easy
 
 ## Features
 
-- **Software setup** — Installs essential tools including KeePassXC, Caddy, LibreOffice, and other system utilities
-- **Intranet** — Deploys a Caddy-served company portal accessible via a local domain
+- **Software setup** — Installs essential tools including Caddy, LibreOffice, Micro, and other system utilities
+- **Intranet** — Deploys a Caddy-served company portal accessible via a local domain (`http://`)
 - **Shell aliases** — Registers a global `update` alias across all user accounts via `/etc/profile.d/` _(Which can be customised!)_
 - **User reports** — Generates per-user text reports containing account details and public SSH keys
 
@@ -49,19 +49,7 @@ git clone https://github.com/Arsi-573/eztool.git
 cd eztool
 ```
 
-**3. Configure the inventory & variables**
-
-The playbook supports running either locally or on a remote VM. Edit `hosts.ini` to set your target environment:
-```ini
-[workstation]
-# Uncomment and add your target IP and user here for remote deployment
-# 192.168.56.xxx ansible_user=USER_HERE ansible_become=true
-
-[local]
-localhost ansible_connection=local ansible_become=true
-```
-
-**4. Set company variables**
+**3. Set company variables**
 
 Edit the `vars` section in `site.yml` to define your company and employees:
 ```yaml
@@ -74,6 +62,18 @@ vars:
       last_name: "Meikäläinen"
 ```
 
+**4. Configure the inventory & variables**
+
+The playbook supports running either locally or on a remote VM. Edit `hosts.ini` to set your target environment:
+```ini
+[workstation]
+# Uncomment and add your target IP and user here for remote deployment
+# 192.168.56.xxx ansible_user=USER_HERE ansible_become=true
+
+[local]
+localhost ansible_connection=local ansible_become=true
+```
+
 **5. Run the setup**
 
 By default, the playbook is set to run on your **local machine**, so to run the setup script locally:
@@ -81,7 +81,7 @@ By default, the playbook is set to run on your **local machine**, so to run the 
 chmod +x install.sh && ./install.sh
 ```
 
-_(Alternatively, to run the playbook on a remote workstation, we must specify the target using the `-e "to=workstation" variable`):_
+_(Alternatively, to run the playbook on a remote workstation, we must specify the target using the `-e "to=workstation"` variable):_
 ```bash
 ansible-playbook -i hosts.ini site.yml -e "to=workstation" -k -K
 ```
